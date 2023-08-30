@@ -1,0 +1,19 @@
+{
+  "name": "shipping-company-backend",
+  "version": "1.0.0",
+  "description": "project shipping-company-backend",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsup src --out-dir build",
+    "start": "node build/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tsup": "^7.2.0",
+    "tsx": "^3.12.7",
+    "typescript": "^5.2.2"
+  }
+}
