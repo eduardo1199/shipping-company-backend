@@ -9,3 +9,113 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id         String   @id @default(uuid())
+  name       String   @db.Text
+  password   String
+  email      String?  @unique()
+  avatar_url String?
+  create_at  DateTime @default(now())
+
+  role     Role[]
+  accounts Account[]
+  sessions Session[]
+  Product  Product[]
+
+  @@map("users")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Account {
+  id                  String  @id @default(cuid())
+  user_id             String
+  type                String
+  provider            String
+  provider_account_id String
+  refresh_token       String? @db.Text
+  access_token        String? @db.Text
+  expires_at          Int?
+  token_type          String?
+  scope               String?
+  id_token            String? @db.Text
+  session_state       String?
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([provider, provider_account_id])
+  @@map("accounts")
+}
+
+model Session {
+  id            String   @id @default(cuid())
+  session_token String   @unique
+  user_id       String
+  expires       DateTime
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Vehicle {
+  id         String   @id @default(uuid())
+  name       String
+  place      String
+  chassis    String
+  file_id    String
+  created_at DateTime @default(now())
+
+  conductor    Conductor @relation(fields: [conductor_id], references: [id])
+  conductor_id String
+
+  @@map("vehicle")
+}
+
+model Displacement {
+  id          String   @id @default(uuid())
+  destination String
+  origin      String
+  distance    Int
+  created_at  DateTime @default(now())
+
+  conductor    Conductor @relation(fields: [conductor_id], references: [id])
+  conductor_id String
+
+  @@map("displacement")
+}
+
+model Conductor {
+  id         String   @id @default(uuid())
+  name       String
+  cpf        String
+  email      String
+  cat_hab    String
+  register   DateTime
+  created_at DateTime @default(now())
+  file_id    String
+
+  Displacement Displacement[]
+  Vehicle      Vehicle[]
+  Product      Product[]
+
+  @@map("conductor")
+}
+
+model Product {
+  id     String  @id @default(uuid())
+  name   String
+  weight Int
+  price  Decimal
+
+  client  User   @relation(fields: [user_id], references: [id])
+  user_id String
+
+  conductor    Conductor @relation(fields: [conductor_id], references: [id])
+  conductor_id String
+
+  @@map("product")
+}
