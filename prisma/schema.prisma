@@ -93,7 +93,7 @@ model Conductor {
   name       String
   cpf        String
   email      String
-  cat_hab    String
+  cat_hab    Int
   register   DateTime
   created_at DateTime @default(now())
   file_id    String
