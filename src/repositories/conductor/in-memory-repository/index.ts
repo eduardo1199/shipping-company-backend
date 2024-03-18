@@ -55,4 +55,16 @@ export class InMemoryConductorRepository implements IConductorRepository {
 
     return findSameConductorWithCatHab
   }
+
+  async findById(id: string) {
+    const findConductorThatId = this.conductors.find(
+      (conductor) => conductor.id === id,
+    )
+
+    if (!findConductorThatId) {
+      return null
+    }
+
+    return findConductorThatId
+  }
 }
