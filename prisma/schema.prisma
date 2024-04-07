@@ -18,8 +18,10 @@ model User {
   avatar_url String?
   create_at  DateTime @default(now())
 
-  role    Role[]
-  Product Product[]
+  role     Role[]
+  accounts Account[]
+  sessions Session[]
+  Product  Product[]
 
   @@map("users")
 }
@@ -28,6 +30,36 @@ enum Role {
   USER
   ADMIN
   CONDUCTOR
+}
+
+model Account {
+  id                  String  @id @default(cuid())
+  user_id             String
+  type                String
+  provider            String
+  provider_account_id String
+  refresh_token       String? @db.Text
+  access_token        String? @db.Text
+  expires_at          Int?
+  token_type          String?
+  scope               String?
+  id_token            String? @db.Text
+  session_state       String?
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([provider, provider_account_id])
+  @@map("accounts")
+}
+
+model Session {
+  id            String   @id @default(cuid())
+  session_token String   @unique
+  user_id       String
+  expires       DateTime
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
 }
 
 model Vehicle {
@@ -75,10 +107,11 @@ model Conductor {
 }
 
 model Product {
-  id     String  @id @default(uuid())
+  id     String        @id @default(uuid())
   name   String
   weight Int
   price  Decimal
+  status ProductStatus @default(ACTIVE)
 
   client  User   @relation(fields: [user_id], references: [id])
   user_id String
@@ -87,4 +120,10 @@ model Product {
   conductor_id String
 
   @@map("product")
+}
+
+enum ProductStatus {
+  ACTIVE
+  PENDING
+  DELIVERED
 }
