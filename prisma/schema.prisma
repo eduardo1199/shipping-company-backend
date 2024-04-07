@@ -29,6 +29,7 @@ model User {
 enum Role {
   USER
   ADMIN
+  CONDUCTOR
 }
 
 model Account {
@@ -106,10 +107,11 @@ model Conductor {
 }
 
 model Product {
-  id     String  @id @default(uuid())
+  id     String        @id @default(uuid())
   name   String
   weight Int
   price  Decimal
+  status ProductStatus @default(ACTIVE)
 
   client  User   @relation(fields: [user_id], references: [id])
   user_id String
@@ -118,4 +120,10 @@ model Product {
   conductor_id String
 
   @@map("product")
+}
+
+enum ProductStatus {
+  ACTIVE
+  PENDING
+  DELIVERED
 }

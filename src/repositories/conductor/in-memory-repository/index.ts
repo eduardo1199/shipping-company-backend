@@ -20,6 +20,39 @@ export class InMemoryConductorRepository implements IConductorRepository {
     return conductorData
   }
 
+  async update(data: Prisma.ConductorUpdateInput) {
+    this.conductors = this.conductors.map((conductorData) => {
+      if (conductorData.id === data.id) {
+        return {
+          id: conductorData.id,
+          name: data.name ? (data.name as string) : conductorData.name,
+          cpf: data.cpf ? (data.cpf as string) : conductorData.cpf,
+          email: data.email ? (data.email as string) : conductorData.email,
+          cat_hab: data.cat_hab
+            ? (data.cat_hab as number)
+            : conductorData.cat_hab,
+          register: data.register
+            ? (data.register as Date)
+            : conductorData.register,
+          created_at: data.created_at
+            ? (data.created_at as Date)
+            : conductorData.created_at,
+          file_id: data.file_id
+            ? (data.file_id as string)
+            : conductorData.file_id,
+        }
+      } else {
+        return conductorData
+      }
+    })
+
+    const findUpdateConductor = this.conductors.find(
+      (conductor) => conductor.id === data.id,
+    )
+
+    return findUpdateConductor!
+  }
+
   async findByCPF(cpf: string) {
     const findSameConductorWithCPF = this.conductors.find(
       (conductor) => conductor.cpf === cpf,
@@ -66,5 +99,15 @@ export class InMemoryConductorRepository implements IConductorRepository {
     }
 
     return findConductorThatId
+  }
+
+  async findSearch(search: string, page: number) {
+    const perPage = 10
+
+    const conductors = this.conductors
+      .filter((conductor) => conductor.name.includes(search))
+      .slice((page - 1) * perPage, perPage * page)
+
+    return conductors
   }
 }
