@@ -5,14 +5,16 @@ import { randomUUID } from 'crypto'
 export class InMemoryConductorRepository implements IConductorRepository {
   public conductors: Conductor[] = []
 
-  async create(data: Prisma.ConductorCreateInput) {
+  async create(data: Prisma.ConductorUncheckedCreateInput) {
     const id = randomUUID()
+    const user_id = randomUUID()
 
     const conductorData: Conductor = {
       ...data,
       register: new Date(),
       created_at: new Date(),
       id,
+      user_id,
     }
 
     this.conductors.push(conductorData)
@@ -20,7 +22,7 @@ export class InMemoryConductorRepository implements IConductorRepository {
     return conductorData
   }
 
-  async update(data: Prisma.ConductorUpdateInput) {
+  async update(data: Prisma.ConductorUncheckedCreateInput) {
     this.conductors = this.conductors.map((conductorData) => {
       if (conductorData.id === data.id) {
         return {
@@ -40,6 +42,7 @@ export class InMemoryConductorRepository implements IConductorRepository {
           file_id: data.file_id
             ? (data.file_id as string)
             : conductorData.file_id,
+          user_id: conductorData.user_id,
         }
       } else {
         return conductorData

@@ -1,7 +1,7 @@
 import { Conductor, Prisma } from '@prisma/client'
 
 export interface IConductorRepository {
-  create(data: Prisma.ConductorCreateInput): Promise<Conductor>
+  create(data: Prisma.ConductorUncheckedCreateInput): Promise<Conductor>
   update(data: Prisma.ConductorUpdateInput): Promise<Conductor>
   findByCPF(cpf: string): Promise<Conductor | null>
   findByEmail(email: string): Promise<Conductor | null>

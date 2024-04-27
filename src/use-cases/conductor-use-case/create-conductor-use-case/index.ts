@@ -11,6 +11,7 @@ interface CreateConductorUseCaseRequest {
   cat_hab: number
   register: Date
   file_id: string
+  user_id: string
 }
 
 interface CreateConductorUseCaseResponse {
