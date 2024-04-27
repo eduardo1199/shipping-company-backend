@@ -18,10 +18,11 @@ model User {
   avatar_url String?
   create_at  DateTime @default(now())
 
-  role     Role[]
-  accounts Account[]
-  sessions Session[]
-  Product  Product[]
+  role      Role[]
+  accounts  Account[]
+  sessions  Session[]
+  Product   Product[]
+  Conductor Conductor[]
 
   @@map("users")
 }
@@ -86,6 +87,9 @@ model Displacement {
   conductor    Conductor @relation(fields: [conductor_id], references: [id])
   conductor_id String
 
+  product    Product @relation(fields: [product_id], references: [id])
+  product_id String
+
   @@map("displacement")
 }
 
@@ -98,6 +102,9 @@ model Conductor {
   register   DateTime
   created_at DateTime @default(now())
   file_id    String
+
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String
 
   Displacement Displacement[]
   Vehicle      Vehicle[]
@@ -113,11 +120,13 @@ model Product {
   price  Decimal
   status ProductStatus @default(ACTIVE)
 
-  client  User   @relation(fields: [user_id], references: [id])
+  user    User   @relation(fields: [user_id], references: [id])
   user_id String
 
   conductor    Conductor @relation(fields: [conductor_id], references: [id])
   conductor_id String
+
+  Displacement Displacement[]
 
   @@map("product")
 }
